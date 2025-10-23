@@ -22,12 +22,13 @@ namespace _3_Маршрутизация_и_DTO.Controllers
         [HttpGet("{id:guid}")]
         public ActionResult<ResponseBookDTO> GetbyId([FromRoute] Guid id)
         {
+
             var b = _books.FirstOrDefault(b => b.Id == id);
             if (b == null)
                 return NotFound();
 
 
-            var book =  new ResponseBookDTO(b.Id, b.Year, b.Author, b.Title);
+            var book = new ResponseBookDTO(b.Id, b.Year, b.Author, b.Title);
             return Ok(book);
         }
 
@@ -52,7 +53,7 @@ namespace _3_Маршрутизация_и_DTO.Controllers
             b.Author = book.author;
             b.Title = book.title;
 
-             return NoContent();
+            return NoContent();
 
         }
         [HttpDelete("{id:guid}")]
@@ -63,9 +64,17 @@ namespace _3_Маршрутизация_и_DTO.Controllers
                 return NotFound();
             _books.Remove(b);
 
-            return NoContent(); 
+            return NoContent();
 
-           
+
         }
+        [HttpGet("error")]
+        public IActionResult DivideByZero()
+        {
+
+            throw new InvalidOperationException();
+        }
+
+
     }
 }
