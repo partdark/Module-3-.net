@@ -1,7 +1,13 @@
+using _3_Маршрутизация_и_DTO.Valitador;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.PatternContexts;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +17,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddScoped<IValidator<CreateBookDTO>, CreateBookDTOValidator>();
+
 
 var app = builder.Build();
 

@@ -1,3 +1,4 @@
+using _3_Маршрутизация_и_DTO.Valitador;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using System.Net;
@@ -14,13 +15,13 @@ namespace _3_Маршрутизация_и_DTO.Controllers
 
 
         [HttpGet]
-        public ActionResult<IEnumerable<ResponseBookDTO>> Get()
+        public ActionResult<IEnumerable<BookResponseDTO>> Get()
         {
-            var books = _books.Select(b => new ResponseBookDTO(b.Id, b.Year, b.Author, b.Title));
+            var books = _books.Select(b => new BookResponseDTO(b.Id, b.Year, b.Author, b.Title));
             return Ok(books);
         }
         [HttpGet("{id:guid}")]
-        public ActionResult<ResponseBookDTO> GetbyId([FromRoute] Guid id)
+        public ActionResult<BookResponseDTO> GetbyId([FromRoute] Guid id)
         {
 
             var b = _books.FirstOrDefault(b => b.Id == id);
@@ -28,17 +29,17 @@ namespace _3_Маршрутизация_и_DTO.Controllers
                 return NotFound();
 
 
-            var book = new ResponseBookDTO(b.Id, b.Year, b.Author, b.Title);
+            var book = new BookResponseDTO(b.Id, b.Year, b.Author, b.Title);
             return Ok(book);
         }
 
         [HttpPost]
-        public ActionResult<ResponseBookDTO> CreateBook([FromBody] CreateBookDTO newBook)
+        public ActionResult<BookResponseDTO> CreateBook([FromBody] CreateBookDTO newBook)
         {
             var b = new Book(newBook.year, newBook.author, newBook.title);
             _books.AddLast(b);
 
-            var book = new ResponseBookDTO(b.Id, b.Year, b.Author, b.Title);
+            var book = new BookResponseDTO(b.Id, b.Year, b.Author, b.Title);
 
             return Ok(book);
         }
