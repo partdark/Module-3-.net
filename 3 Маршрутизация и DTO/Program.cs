@@ -21,7 +21,24 @@ builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySetti
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Book Api",
+        Version = "v1",
+        Description = "Api для управления книгами"
+    });
+
+
+var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+
+if (File.Exists(xmlPath))
+{
+    c.IncludeXmlComments(xmlPath);
+}
+});
 
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();
@@ -54,7 +71,7 @@ app.UseExceptionHandler(exceptionHandlerApp =>
         Console.WriteLine($"Error {exeption?.Message}");
         Console.WriteLine($"StackTrace {exeption?.StackTrace}");
 
-        await context.Response.WriteAsJsonAsync( details );
+        await context.Response.WriteAsJsonAsync(details);
     });
 });
 

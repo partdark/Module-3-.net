@@ -8,6 +8,11 @@ using _3_Маршрутизация_и_DTO;
 
 namespace _3_Маршрутизация_и_DTO.Controllers
 {
+
+    /// <summary>
+    /// Базовый контроллер для управления книгами
+    /// </summary>
+
     [ApiController]
     [Route("[controller]")]
 
@@ -17,10 +22,17 @@ namespace _3_Маршрутизация_и_DTO.Controllers
         private readonly MySettings _settings;
         private static readonly LinkedList<Book> _books = new();
 
+
+
         public BookController(IOptions<MySettings> setting)
         {
             _settings = setting.Value;
         }
+
+
+        /// <summary>
+        /// Получение настроек MySettings
+        /// </summary>
         [HttpGet("settings")]
         public async Task<IActionResult> GetSettings()
         {
@@ -33,6 +45,11 @@ namespace _3_Маршрутизация_и_DTO.Controllers
             });
         }
 
+        /// <summary>
+        /// Получение списка всех книг
+        /// </summary>
+        /// <returns>Все существующие книги, которые были ранее добавлены</returns>
+        /// <response code ="200">Запрос выполнен успешно</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookResponseDTO>>> Get()
         {
@@ -40,6 +57,15 @@ namespace _3_Маршрутизация_и_DTO.Controllers
             var books = _books.Select(b => new BookResponseDTO(b.Id, b.Year, b.Author, b.Title));
             return Ok(books);
         }
+
+
+        /// <summary>
+        /// Получение списка всех книги по указанному Id
+        /// </summary>
+        /// <param name="id">Id книги</param>
+        /// <returns>Найденая книга</returns>
+        /// <response code ="200">Запрос выполнен успешно, возвращена книга</response>
+        /// /// <response code ="404">Книга с указанным Id не найдена</response>
         [HttpGet("{id:guid}")]
 
         public async Task<ActionResult<BookResponseDTO>> GetbyId([FromRoute] Guid id)
@@ -54,6 +80,12 @@ namespace _3_Маршрутизация_и_DTO.Controllers
             return Ok(book);
         }
 
+        /// <summary>
+        /// Добавляет книгу с указанными параметрами
+        /// </summary>
+        /// <param name="newBook">DTO для создание книги</param>
+        /// <returns>Созданная</returns>
+        /// /// <response code ="400">Данные не прошли валидацию</response>
         [HttpPost]
         public async Task<ActionResult<BookResponseDTO>> CreateBook([FromBody] CreateBookDTO newBook)
         {
@@ -66,6 +98,11 @@ namespace _3_Маршрутизация_и_DTO.Controllers
             return Ok(book);
         }
 
+
+        /// <summary>
+        /// Обвноляет данные указанной по Id книги
+        /// </summary>
+        /// <param name="book">Новые данные для указанной книги</param>
         [HttpPut("id:guid")]
         public async Task<IActionResult> Update([FromBody] UpdateBookDTO book)
         {
@@ -80,6 +117,11 @@ namespace _3_Маршрутизация_и_DTO.Controllers
             return NoContent();
 
         }
+
+        /// <summary>
+        /// Удаляет книгу из коллекции по указанному Id
+        /// </summary>
+        /// <param name="id">Id книги для удаления</param>
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteById([FromRoute] Guid id)
         {
@@ -93,6 +135,11 @@ namespace _3_Маршрутизация_и_DTO.Controllers
 
 
         }
+
+        /// <summary>
+        /// Возвращает ошибку для проверки middleware
+        /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
         [HttpGet("error")]
         public async Task<IActionResult> DivideByZero()
         {
