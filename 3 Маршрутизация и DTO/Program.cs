@@ -1,3 +1,4 @@
+using _3_Маршрутизация_и_DTO;
 using _3_Маршрутизация_и_DTO.Valitador;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -10,6 +11,10 @@ using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+
+builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySettings"));
 
 // Add services to the container.
 

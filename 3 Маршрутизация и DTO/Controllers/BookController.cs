@@ -1,7 +1,10 @@
 using _3_Маршрутизация_и_DTO.Valitador;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Collections;
 using System.Net;
+using System.Runtime;
+using _3_Маршрутизация_и_DTO;
 
 namespace _3_Маршрутизация_и_DTO.Controllers
 {
@@ -11,8 +14,23 @@ namespace _3_Маршрутизация_и_DTO.Controllers
 
     public class BookController : ControllerBase
     {
+        private  readonly MySettings _settings;
         private static readonly LinkedList<Book> _books = new();
 
+        public  BookController(IOptions<MySettings> setting)
+        {
+            _settings = setting.Value;
+        }
+        [HttpGet("settings")]
+        public IActionResult GetSettings()
+        {
+            return Ok( new
+                {
+                ApplicationName = _settings.ApplicationName,
+                MaxBooksPerPage = _settings.MaxBooksPerPage,
+                ApiSettings = _settings.ApiSettings
+            });
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<BookResponseDTO>> Get()
