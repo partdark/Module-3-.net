@@ -19,6 +19,7 @@ builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySetti
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHealthChecks();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -48,6 +49,8 @@ builder.Services.AddScoped<IValidator<CreateBookDTO>, CreateBookDTOValidator>();
 
 
 var app = builder.Build();
+
+
 
 
 app.UseExceptionHandler(exceptionHandlerApp =>
@@ -100,6 +103,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.MapHealthChecks("/healthz");
+
 
 app.MapControllers();
 
