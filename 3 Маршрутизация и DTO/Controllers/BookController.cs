@@ -14,18 +14,19 @@ namespace _3_Маршрутизация_и_DTO.Controllers
 
     public class BookController : ControllerBase
     {
-        private  readonly MySettings _settings;
+        private readonly MySettings _settings;
         private static readonly LinkedList<Book> _books = new();
 
-        public  BookController(IOptions<MySettings> setting)
+        public BookController(IOptions<MySettings> setting)
         {
             _settings = setting.Value;
         }
         [HttpGet("settings")]
-        public IActionResult GetSettings()
+        public async Task<IActionResult> GetSettings()
         {
-            return Ok( new
-                {
+            await Task.Delay(1000);
+            return Ok(new
+            {
                 ApplicationName = _settings.ApplicationName,
                 MaxBooksPerPage = _settings.MaxBooksPerPage,
                 ApiSettings = _settings.ApiSettings
@@ -33,15 +34,17 @@ namespace _3_Маршрутизация_и_DTO.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<BookResponseDTO>> Get()
+        public async Task<ActionResult<IEnumerable<BookResponseDTO>>> Get()
         {
+            await Task.Delay(1000);
             var books = _books.Select(b => new BookResponseDTO(b.Id, b.Year, b.Author, b.Title));
             return Ok(books);
         }
         [HttpGet("{id:guid}")]
-        public ActionResult<BookResponseDTO> GetbyId([FromRoute] Guid id)
-        {
 
+        public async Task<ActionResult<BookResponseDTO>> GetbyId([FromRoute] Guid id)
+        {
+            await Task.Delay(1000);
             var b = _books.FirstOrDefault(b => b.Id == id);
             if (b == null)
                 return NotFound();
@@ -52,8 +55,9 @@ namespace _3_Маршрутизация_и_DTO.Controllers
         }
 
         [HttpPost]
-        public ActionResult<BookResponseDTO> CreateBook([FromBody] CreateBookDTO newBook)
+        public async Task<ActionResult<BookResponseDTO>> CreateBook([FromBody] CreateBookDTO newBook)
         {
+            await Task.Delay(1000);
             var b = new Book(newBook.year, newBook.author, newBook.title);
             _books.AddLast(b);
 
@@ -63,8 +67,9 @@ namespace _3_Маршрутизация_и_DTO.Controllers
         }
 
         [HttpPut("id:guid")]
-        public IActionResult Update([FromBody] UpdateBookDTO book)
+        public async Task<IActionResult> Update([FromBody] UpdateBookDTO book)
         {
+            await Task.Delay(1000);
             var b = _books.FirstOrDefault(b => b.Id == book.id);
             if (b == null)
                 return NotFound();
@@ -76,8 +81,9 @@ namespace _3_Маршрутизация_и_DTO.Controllers
 
         }
         [HttpDelete("{id:guid}")]
-        public IActionResult DeleteById([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteById([FromRoute] Guid id)
         {
+            await Task.Delay(1000);
             var b = _books.FirstOrDefault(b => b.Id == id);
             if (b == null)
                 return NotFound();
@@ -88,8 +94,9 @@ namespace _3_Маршрутизация_и_DTO.Controllers
 
         }
         [HttpGet("error")]
-        public IActionResult DivideByZero()
+        public async Task<IActionResult> DivideByZero()
         {
+            await Task.Delay(1000);
 
             throw new InvalidOperationException();
         }
